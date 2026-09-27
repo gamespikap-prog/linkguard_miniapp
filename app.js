@@ -203,9 +203,6 @@ $('#soundBtn').addEventListener('click', () => {
   showToast(state.sound ? 'Звук включён' : 'Звук выключен');
 });
 
-if (state.user) {
-  welcomeTitle.textContent = `Привет, ${state.user.first_name}!`;
-}
 
 balance.textContent = state.balance.toLocaleString('ru-RU');
 console.log('LinkGuard 2.0 Mini App UI v2 loaded');

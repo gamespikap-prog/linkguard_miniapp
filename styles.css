@@ -29,30 +29,29 @@ button { font: inherit; color: inherit; border: 0; cursor: pointer; }
 .icon-btn:active { transform: scale(.95); }
 
 .content { padding: 13px 15px 0; }
-.balance-bar { min-height: 64px; display: flex; align-items: center; gap: 11px; padding: 11px 13px; border-radius: 18px; background: linear-gradient(135deg, rgba(32,31,53,.96), rgba(15,18,27,.96)); border: 1px solid rgba(255,255,255,.08); box-shadow: 0 14px 35px rgba(0,0,0,.22); position: relative; overflow: hidden; }
-.balance-bar::after { content: ""; position: absolute; width: 120px; height: 120px; right: -45px; top: -50px; border-radius: 50%; background: radial-gradient(circle, rgba(121,92,255,.24), transparent 70%); }
-.balance-icon { width: 40px; height: 40px; border-radius: 13px; display: grid; place-items: center; color: #ffd95e; font-size: 21px; background: rgba(255,205,73,.1); border: 1px solid rgba(255,211,91,.12); z-index: 1; }
-.balance-copy { display: flex; flex-direction: column; gap: 1px; z-index: 1; }
-.balance-copy span { color: var(--muted); font-size: 10px; font-weight: 600; }
-.balance-copy strong { font-size: 19px; letter-spacing: -.5px; }
-.balance-label { margin-left: auto; color: #777f93; font-size: 9px; font-weight: 800; letter-spacing: 1.2px; z-index: 1; }
+.balance-area { min-height: 106px; display: flex; align-items: center; justify-content: center; gap: 13px; }
+.balance-orb { width: 94px; height: 94px; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; background: radial-gradient(circle at 35% 25%, rgba(255,218,94,.16), rgba(121,92,255,.10) 45%, rgba(15,18,27,.98) 72%); border: 1px solid rgba(255,218,94,.2); box-shadow: 0 12px 34px rgba(0,0,0,.25), inset 0 0 24px rgba(121,92,255,.08); }
+.balance-star { color: #ffd95e; font-size: 12px; line-height: 1; margin-bottom: 3px; }
+.balance-orb span { color: #858c9d; font-size: 7px; font-weight: 900; letter-spacing: 1.1px; }
+.balance-orb strong { font-size: 20px; line-height: 1.05; letter-spacing: -.7px; margin-top: 2px; }
+.balance-orb small { color: #72798b; font-size: 7px; margin-top: 2px; }
+.top-up-btn { background: transparent; color: #aaa2ff; font-size: 10px; font-weight: 800; padding: 7px 0; }
+.top-up-btn:active { opacity: .65; transform: scale(.96); }
 
-.live-strip-wrap { margin-top: 13px; position: relative; }
-.live-label { position: absolute; left: 0; top: 0; z-index: 2; height: 42px; padding: 0 10px; display: flex; align-items: center; gap: 6px; font-size: 9px; font-weight: 900; letter-spacing: .8px; background: linear-gradient(90deg, var(--bg) 70%, transparent); padding-right: 24px; }
-.live-pulse { width: 7px; height: 7px; border-radius: 50%; background: #46e795; box-shadow: 0 0 0 4px rgba(70,231,149,.1), 0 0 13px rgba(70,231,149,.7); }
-.live-strip { height: 47px; display: flex; align-items: center; gap: 8px; overflow-x: auto; padding: 0 4px 0 61px; scrollbar-width: none; }
+.live-strip-wrap { margin-top: 2px; position: relative; }
+.live-strip-wrap::before { content: ""; position: absolute; inset: 0; border: 1px solid rgba(64,230,150,.17); border-radius: 15px; pointer-events: none; }
+.live-label { position: absolute; left: 9px; top: -7px; z-index: 2; height: 16px; padding: 0 7px; display: flex; align-items: center; gap: 5px; font-size: 8px; font-weight: 900; letter-spacing: .8px; color: #8df5bd; background: var(--bg); }
+.live-pulse { width: 6px; height: 6px; border-radius: 50%; background: #46e795; box-shadow: 0 0 0 3px rgba(70,231,149,.1), 0 0 10px rgba(70,231,149,.65); }
+.live-strip { min-height: 52px; display: flex; align-items: center; justify-content: center; gap: 8px; overflow-x: auto; padding: 8px 10px; scrollbar-width: none; }
 .live-strip::-webkit-scrollbar { display: none; }
+.live-strip.empty { color: #626a7c; }
+.live-empty { font-size: 9px; }
 .live-win { min-width: max-content; display: flex; align-items: center; gap: 7px; padding: 7px 10px; border-radius: 13px; background: #0f121a; border: 1px solid var(--line); font-size: 10px; white-space: nowrap; }
 .live-win span { font-size: 17px; }
 .live-win b { font-size: 10px; }
 .live-win small { color: var(--green); font-size: 9px; font-weight: 800; }
 
-.hero-copy { padding: 11px 3px 2px; }
-.eyebrow, .section-kicker { font-size: 9px; font-weight: 900; letter-spacing: 1.8px; color: #9181ff; }
-.hero-copy h1 { font-size: 27px; line-height: 1.08; margin: 7px 0 7px; letter-spacing: -.9px; }
-.hero-copy p { font-size: 13px; line-height: 1.45; color: var(--muted); margin: 0; }
-
-.games-section { margin-top: 22px; }
+.games-section { margin-top: 17px; }
 .section-head { display: flex; justify-content: space-between; align-items: end; margin-bottom: 12px; }
 .section-head h2 { margin: 4px 0 0; font-size: 23px; letter-spacing: -.6px; }
 .featured-games { display: grid; gap: 12px; }

@@ -25,31 +25,21 @@
     </header>
 
     <main class="content">
-      <section class="balance-bar">
-        <div class="balance-icon">★</div>
-        <div class="balance-copy">
-          <span>Твой баланс</span>
+      <section class="balance-area">
+        <div class="balance-orb">
+          <div class="balance-star">★</div>
+          <span>БАЛАНС</span>
           <strong id="balanceValue">0</strong>
+          <small>очков</small>
         </div>
-        <div class="balance-label">ОЧКОВ</div>
+        <button class="top-up-btn" id="topUpBtn">Пополнить</button>
       </section>
 
       <section class="live-strip-wrap">
         <div class="live-label"><span class="live-pulse"></span> LIVE</div>
-        <div class="live-strip" id="liveStrip">
-          <div class="live-win"><span>🎁</span><b>Игрок</b><small>+150</small></div>
-          <div class="live-win"><span>🛡️</span><b>Alex</b><small>+1 Shield</small></div>
-          <div class="live-win"><span>💎</span><b>Max</b><small>+500</small></div>
-          <div class="live-win"><span>🎟️</span><b>Player</b><small>+3 попытки</small></div>
-          <div class="live-win"><span>🎁</span><b>Nova</b><small>+250</small></div>
-          <div class="live-win"><span>👑</span><b>Pro</b><small>Premium</small></div>
+        <div class="live-strip empty" id="liveStrip">
+          <span class="live-empty">Пока никто не выиграл</span>
         </div>
-      </section>
-
-      <section class="hero-copy">
-        <span class="eyebrow">LINKGUARD 2.0</span>
-        <h1 id="welcomeTitle">Играй и забирай награды</h1>
-        <p>Мини-игры, кейсы и рейтинг — всё в одном месте.</p>
       </section>
 
       <section class="games-section" id="gamesSection">
