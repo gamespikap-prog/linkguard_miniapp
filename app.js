@@ -2,7 +2,10 @@ const tg = window.Telegram?.WebApp;
 if (tg) {
   tg.ready();
   tg.expand();
-  try { tg.setHeaderColor('#080a10'); tg.setBackgroundColor('#080a10'); } catch (_) {}
+  try {
+    tg.setHeaderColor('#07080d');
+    tg.setBackgroundColor('#07080d');
+  } catch (_) {}
 }
 
 const $ = (selector) => document.querySelector(selector);
@@ -14,16 +17,17 @@ const state = {
   user: tg?.initDataUnsafe?.user || null
 };
 
-const title = $('#welcomeTitle');
 const balance = $('#balanceValue');
+const welcomeTitle = $('#welcomeTitle');
 const gamesSection = $('#gamesSection');
-const quickRow = $('.quick-row');
 const subPage = $('#subPage');
 const subPageContent = $('#subPageContent');
 const toast = $('#toast');
 
 function escapeHtml(value = '') {
-  return String(value).replace(/[&<>'"]/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#039;','"':'&quot;'}[char]));
+  return String(value).replace(/[&<>'"]/g, char => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#039;', '"': '&quot;'
+  }[char]));
 }
 
 function showToast(message) {
@@ -34,82 +38,149 @@ function showToast(message) {
 }
 
 function setActiveTab(tab) {
-  $$('.nav-item').forEach(item => item.classList.toggle('active', item.dataset.tab === tab));
+  $$('.nav-item').forEach(item => {
+    item.classList.toggle('active', item.dataset.tab === tab);
+  });
 }
 
 function showGames() {
   gamesSection.classList.remove('hidden');
-  quickRow.classList.remove('hidden');
   subPage.classList.add('hidden');
   setActiveTab('games');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function showTop() {
   gamesSection.classList.add('hidden');
-  quickRow.classList.add('hidden');
   subPage.classList.remove('hidden');
   setActiveTab('top');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
   subPageContent.innerHTML = `
-    <div class="sub-card">
+    <div class="sub-card top-card">
       <span class="section-kicker">LEADERBOARD</span>
-      <h2>🏆 Топ игроков</h2>
-      <p>Рейтинг пока работает в демо-режиме. После подключения базы здесь появятся реальные игроки.</p>
+      <h2>🏆 Топы LinkGuard</h2>
+      <p class="lead-text">Соревнуйся с другими игроками, набирай активность и поднимайся выше в таблице.</p>
+
+      <div class="podium">
+        <div class="podium-place second"><span>🥈</span><b>Игрок #2</b><small>0 очков</small></div>
+        <div class="podium-place first"><span>🥇</span><b>Игрок #1</b><small>0 очков</small></div>
+        <div class="podium-place third"><span>🥉</span><b>Игрок #3</b><small>0 очков</small></div>
+      </div>
+
+      <div class="reward-note">
+        <div class="reward-note-icon">🎁</div>
+        <div>
+          <h3>Награды за активность</h3>
+          <p>Топ-3 по итогам рейтинга смогут получить от меня подарок общей ценностью от 100–150 ⭐.</p>
+        </div>
+      </div>
+
+      <div class="secret-note">
+        <span>🔒</span>
+        <div>
+          <b>Секретные награды</b>
+          <p>За очень высокую активность иногда открываются дополнительные секретные награды. Их условия заранее не раскрываются 👀</p>
+        </div>
+      </div>
+
       <div class="mini-list">
-        <div class="mini-row"><span class="rank-num">#1</span><span class="rank-name">LinkGuard Player</span><span class="rank-score">0</span></div>
-        <div class="mini-row"><span class="rank-num">#2</span><span class="rank-name">Ожидает данных</span><span class="rank-score">—</span></div>
-        <div class="mini-row"><span class="rank-num">#3</span><span class="rank-name">Ожидает данных</span><span class="rank-score">—</span></div>
+        <div class="mini-row"><span class="rank-num">#1</span><span class="rank-name">Ожидает игроков</span><span class="rank-score">—</span></div>
+        <div class="mini-row"><span class="rank-num">#2</span><span class="rank-name">Ожидает игроков</span><span class="rank-score">—</span></div>
+        <div class="mini-row"><span class="rank-num">#3</span><span class="rank-name">Ожидает игроков</span><span class="rank-score">—</span></div>
       </div>
     </div>`;
 }
 
 function showProfile() {
   gamesSection.classList.add('hidden');
-  quickRow.classList.add('hidden');
   subPage.classList.remove('hidden');
   setActiveTab('profile');
-  const name = state.user ? [state.user.first_name, state.user.last_name].filter(Boolean).join(' ') : 'Гость';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  const name = state.user
+    ? [state.user.first_name, state.user.last_name].filter(Boolean).join(' ')
+    : 'Гость';
+
   subPageContent.innerHTML = `
     <div class="sub-card">
       <span class="section-kicker">PROFILE</span>
-      <h2>👤 ${escapeHtml(name)}</h2>
-      <p>Твой профиль LinkGuard. Реальные данные подключим к API после установки сервера.</p>
+      <div class="profile-head">
+        <div class="avatar">${escapeHtml((name[0] || 'G').toUpperCase())}</div>
+        <div>
+          <h2>${escapeHtml(name)}</h2>
+          <p>Твой профиль LinkGuard</p>
+        </div>
+      </div>
+
+      <div class="profile-balance">
+        <span>★</span>
+        <div><small>Баланс</small><strong>${state.balance.toLocaleString('ru-RU')} очков</strong></div>
+      </div>
+
       <div class="stat-grid">
         <div class="stat"><b>${state.balance}</b><span>ОЧКОВ</span></div>
         <div class="stat"><b>0</b><span>ИГР</span></div>
         <div class="stat"><b>0</b><span>ПОБЕД</span></div>
         <div class="stat"><b>0</b><span>ПРЕДМЕТОВ</span></div>
       </div>
+
+      <div class="inventory-box">
+        <span class="section-kicker">INVENTORY</span>
+        <h3>🎒 Инвентарь</h3>
+        <p>Здесь появятся Shield, Scanner, попытки, купоны и другие награды.</p>
+      </div>
     </div>`;
 }
 
+const gameData = {
+  daily: {
+    icon: '🎁',
+    tag: 'БЕСПЛАТНО',
+    title: 'Бесплатный кейс',
+    text: 'Один бесплатный кейс раз в 24 часа. Здесь позже появится настоящая анимация открытия и выдача награды.'
+  },
+  cases: {
+    icon: '🎁',
+    tag: 'НАГРАДЫ',
+    title: 'Кейсы',
+    text: 'Открывай кейсы и получай ресурсы, попытки, бустеры и другие награды. Механику подключим после базы.'
+  },
+  mines: {
+    icon: '💣',
+    tag: 'GAME',
+    title: 'Мины',
+    text: 'Выбирай Easy, Medium или Hardcore, открывай клетки и решай, когда забрать накопленный банк.'
+  },
+  duel: {
+    icon: '⚔️',
+    tag: 'PVP',
+    title: 'PvP Дуэль',
+    text: 'В будущем здесь появятся поиск соперника, приглашение в дуэль и результат матча за виртуальные очки.'
+  }
+};
+
 function showGame(page) {
+  const data = gameData[page];
+  if (!data) return;
+
   gamesSection.classList.add('hidden');
-  quickRow.classList.add('hidden');
   subPage.classList.remove('hidden');
   setActiveTab('games');
-
-  const data = {
-    mines: {
-      icon:'💣', title:'Mines', text:'Выбери режим и открывай клетки. Пока это визуальная демо-страница — игровую механику подключим к боту позже.'
-    },
-    duel: {
-      icon:'⚔️', title:'PvP Дуэль', text:'Комната для дуэлей между игроками. Здесь позже появятся поиск соперника, приглашение и результат матча.'
-    },
-    cases: {
-      icon:'🎁', title:'Кейсы', text:'Раздел наград и ежедневного кейса. Сейчас показываем интерфейс, а систему выдачи предметов подключим после базы.'
-    }
-  }[page];
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 
   subPageContent.innerHTML = `
-    <div class="sub-card">
-      <div class="game-icon" style="margin-bottom:14px">${data.icon}</div>
-      <span class="section-kicker">GAME MODULE</span>
+    <div class="sub-card game-page">
+      <button class="back-btn" id="innerBack">‹ Игры</button>
+      <div class="large-game-icon">${data.icon}</div>
+      <span class="section-kicker">${data.tag}</span>
       <h2>${data.title}</h2>
-      <p>${data.text}</p>
-      <button class="back-btn" style="margin-top:18px" id="demoAction">Открыть демо</button>
+      <p class="lead-text">${data.text}</p>
+      <button class="primary-btn" id="demoAction">Скоро будет доступно</button>
     </div>`;
 
-  $('#demoAction').addEventListener('click', () => showToast('Модуль готов к подключению 🚀'));
+  $('#innerBack').addEventListener('click', showGames);
+  $('#demoAction').addEventListener('click', () => showToast('Модуль уже в разработке 🚀'));
 }
 
 $$('.nav-item').forEach(item => {
@@ -120,9 +191,8 @@ $$('.nav-item').forEach(item => {
   });
 });
 
-$$('[data-page]').forEach(card => card.addEventListener('click', () => showGame(card.dataset.page)));
-$$('[data-tab]').filter(el => !el.classList.contains('nav-item')).forEach(card => {
-  card.addEventListener('click', () => card.dataset.tab === 'top' ? showTop() : showProfile());
+$$('[data-page]').forEach(card => {
+  card.addEventListener('click', () => showGame(card.dataset.page));
 });
 
 $('#backBtn').addEventListener('click', showGames);
@@ -134,8 +204,8 @@ $('#soundBtn').addEventListener('click', () => {
 });
 
 if (state.user) {
-  title.textContent = `Привет, ${state.user.first_name}!`;
+  welcomeTitle.textContent = `Привет, ${state.user.first_name}!`;
 }
 
 balance.textContent = state.balance.toLocaleString('ru-RU');
-console.log('LinkGuard Mini App UI loaded');
+console.log('LinkGuard 2.0 Mini App UI v2 loaded');
