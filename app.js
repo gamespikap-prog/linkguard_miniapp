@@ -2,207 +2,259 @@ const tg = window.Telegram?.WebApp;
 if (tg) {
   tg.ready();
   tg.expand();
-  try {
-    tg.setHeaderColor('#07080d');
-    tg.setBackgroundColor('#07080d');
-  } catch (_) {}
 }
 
-const $ = (selector) => document.querySelector(selector);
-const $$ = (selector) => [...document.querySelectorAll(selector)];
+// Укажи здесь HTTPS-адрес твоего бэкенда на Raven Host
+const API_BASE = "https://tex.ravenhost.space:19278/api/v1"; 
 
-const state = {
+const $ = (selector) => document.querySelector(selector); const $$ = (selector) => [...document.querySelectorAll(selector)];
+
+let state = {
   balance: 0,
-  sound: true,
-  user: tg?.initDataUnsafe?.user || null
+  user: tg?.initDataUnsafe?.user || { id: 12345, first_name: "Тест" },
+  audioPlaying: false,
+  audio: null
 };
 
-const balance = $('#balanceValue');
-const welcomeTitle = $('#welcomeTitle');
-const gamesSection = $('#gamesSection');
-const subPage = $('#subPage');
-const subPageContent = $('#subPageContent');
-const toast = $('#toast');
-
-function escapeHtml(value = '') {
-  return String(value).replace(/[&<>'"]/g, char => ({
-    '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#039;', '"': '&quot;'
-  }[char]));
-}
-
 function showToast(message) {
+  let toast = $('#toast');
+  if (!toast) return;
   toast.textContent = message;
   toast.classList.add('show');
-  clearTimeout(showToast.timer);
-  showToast.timer = setTimeout(() => toast.classList.remove('show'), 1700);
+  setTimeout(() => toast.classList.remove('show'), 2000);
 }
 
-function setActiveTab(tab) {
-  $$('.nav-item').forEach(item => {
+async function fetchUserData() {
+  try {
+    const res = await fetch(`${API_BASE}/user`, {
+      headers: { "init-data": tg?.initData || "" }
+    });
+    if (res.ok) {
+      const data = await res.json();
+      state.balance = data.balance;
+      $('#balanceValue').textContent = state.balance.toLocaleString('ru-RU');     }   } catch (e) {     console.log("API connection error");   } }  function setActiveTab(tab) {   $$('.nav-item').forEach(item => {
     item.classList.toggle('active', item.dataset.tab === tab);
   });
 }
 
 function showGames() {
-  gamesSection.classList.remove('hidden');
-  subPage.classList.add('hidden');
+  $('#gamesSection').classList.remove('hidden');
+  $('#subPage').classList.add('hidden');
   setActiveTab('games');
-  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-function showTop() {
-  gamesSection.classList.add('hidden');
-  subPage.classList.remove('hidden');
+async function showTop() {
+  $('#gamesSection').classList.add('hidden');
+  $('#subPage').classList.remove('hidden');
   setActiveTab('top');
-  window.scrollTo({ top: 0, behavior: 'smooth' });
 
-  subPageContent.innerHTML = `
-    <div class="sub-card top-card">
-      <span class="section-kicker">LEADERBOARD</span>
-      <h2>🏆 Топы LinkGuard</h2>
-      <p class="lead-text">Соревнуйся с другими игроками, набирай активность и поднимайся выше в таблице.</p>
+  let leadersHtml = '<p>Загрузка...</p>';
+  let hallHtml = '<p>Загрузка...</p>';
 
-      <div class="podium">
-        <div class="podium-place second"><span>🥈</span><b>Игрок #2</b><small>0 очков</small></div>
-        <div class="podium-place first"><span>🥇</span><b>Игрок #1</b><small>0 очков</small></div>
-        <div class="podium-place third"><span>🥉</span><b>Игрок #3</b><small>0 очков</small></div>
-      </div>
+  try {
+    const [resL, resH] = await Promise.all([
+      fetch(`${API_BASE}/leaderboard`),
+      fetch(`${API_BASE}/halloffame`)
+    ]);
+    if (resL.ok) {
+      const data = await resL.json();
+      leadersHtml = data.map((item, idx) => `
+        <div class="mini-row"><span class="rank-num">#${idx+1}</span><span class="rank-name">${item.name}</span><span class="rank-score">${item.balance} ★</span></div>
+      `).join('');
+    }
+    if (resH.ok) {
+      const data = await resH.json();
+      hallHtml = data.map((item) => `
+        <div class="mini-row"><span class="rank-num">⭐</span><span class="rank-name">${item.name}</span></div>
+      `).join('');
+    }
+  } catch (e) {}
 
-      <div class="reward-note">
-        <div class="reward-note-icon">🎁</div>
-        <div>
-          <h3>Награды за активность</h3>
-          <p>Топ-3 по итогам рейтинга смогут получить от меня подарок общей ценностью от 100–150 ⭐.</p>
-        </div>
-      </div>
-
-      <div class="secret-note">
-        <span>🔒</span>
-        <div>
-          <b>Секретные награды</b>
-          <p>За очень высокую активность иногда открываются дополнительные секретные награды. Их условия заранее не раскрываются 👀</p>
-        </div>
-      </div>
-
-      <div class="mini-list">
-        <div class="mini-row"><span class="rank-num">#1</span><span class="rank-name">Ожидает игроков</span><span class="rank-score">—</span></div>
-        <div class="mini-row"><span class="rank-num">#2</span><span class="rank-name">Ожидает игроков</span><span class="rank-score">—</span></div>
-        <div class="mini-row"><span class="rank-num">#3</span><span class="rank-name">Ожидает игроков</span><span class="rank-score">—</span></div>
-      </div>
+  $('#subPageContent').innerHTML = `
+    <div class="sub-card">
+      <h2>🏆 Топ-10 игроков</h2>
+      <div class="mini-list">${leadersHtml}</div>
+      <h2 style="margin-top:20px;">⭐ Hall of Fame</h2>
+      <div class="mini-list">${hallHtml}</div>
     </div>`;
 }
 
 function showProfile() {
-  gamesSection.classList.add('hidden');
-  subPage.classList.remove('hidden');
+  $('#gamesSection').classList.add('hidden');
+  $('#subPage').classList.remove('hidden');
   setActiveTab('profile');
-  window.scrollTo({ top: 0, behavior: 'smooth' });
 
-  const name = state.user
-    ? [state.user.first_name, state.user.last_name].filter(Boolean).join(' ')
-    : 'Гость';
-
-  subPageContent.innerHTML = `
+  const u = state.user;
+  $('#subPageContent').innerHTML = `
     <div class="sub-card">
-      <span class="section-kicker">PROFILE</span>
-      <div class="profile-head">
-        <div class="avatar">${escapeHtml((name[0] || 'G').toUpperCase())}</div>
-        <div>
-          <h2>${escapeHtml(name)}</h2>
-          <p>Твой профиль LinkGuard</p>
-        </div>
-      </div>
-
-      <div class="profile-balance">
-        <span>★</span>
-        <div><small>Баланс</small><strong>${state.balance.toLocaleString('ru-RU')} очков</strong></div>
-      </div>
-
-      <div class="stat-grid">
-        <div class="stat"><b>${state.balance}</b><span>ОЧКОВ</span></div>
-        <div class="stat"><b>0</b><span>ИГР</span></div>
-        <div class="stat"><b>0</b><span>ПОБЕД</span></div>
-        <div class="stat"><b>0</b><span>ПРЕДМЕТОВ</span></div>
-      </div>
-
-      <div class="inventory-box">
-        <span class="section-kicker">INVENTORY</span>
-        <h3>🎒 Инвентарь</h3>
-        <p>Здесь появятся Shield, Scanner, попытки, купоны и другие награды.</p>
-      </div>
+      <h2>👤 Профиль</h2>
+      <p><b>Имя:</b> ${u.first_name || 'Игрок'}</p>
+      <p><b>Telegram ID:</b> <code>${u.id}</code></p>
+      <p><b>Баланс:</b> ${state.balance} очков</p>
+      <button class="primary-btn" onclick="navigator.clipboard.writeText('${u.id}'); showToast('ID скопирован!')">Скопировать мой ID</button>
     </div>`;
 }
 
-const gameData = {
-  daily: {
-    icon: '🎁',
-    tag: 'БЕСПЛАТНО',
-    title: 'Бесплатный кейс',
-    text: 'Один бесплатный кейс раз в 24 часа. Здесь позже появится настоящая анимация открытия и выдача награды.'
-  },
-  cases: {
-    icon: '🎁',
-    tag: 'НАГРАДЫ',
-    title: 'Кейсы',
-    text: 'Открывай кейсы и получай ресурсы, попытки, бустеры и другие награды. Механику подключим после базы.'
-  },
-  mines: {
-    icon: '💣',
-    tag: 'GAME',
-    title: 'Мины',
-    text: 'Выбирай Easy, Medium или Hardcore, открывай клетки и решай, когда забрать накопленный банк.'
-  },
-  duel: {
-    icon: '⚔️',
-    tag: 'PVP',
-    title: 'PvP Дуэль',
-    text: 'В будущем здесь появятся поиск соперника, приглашение в дуэль и результат матча за виртуальные очки.'
+async function startMinesGame() {
+  const bet = parseInt($('#minesBet').value) || 10;
+  const minesCount = parseInt($('#minesCount').value) || 3;
+
+  try {
+    const res = await fetch(`${API_BASE}/mines/start`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ initData: tg?.initData || "", bet, mines_count: minesCount })
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      showToast(data.detail || "Ошибка запуска");
+      return;
+    }
+    state.balance = data.balance;
+    $('#balanceValue').textContent = state.balance;
+    renderMinesBoard(data.game_id);
+  } catch (e) {
+    showToast("Ошибка соединения");
+  }
+}
+
+function renderMinesBoard(gameId) {
+  let cellsHtml = '';
+  for (let i = 0; i < 25; i++) {
+    cellsHtml += `<button class="mine-cell" data-idx="${i}" onclick="openMineCell('${gameId}', ${i})">❓</button>`;
+  }
+  $('#subPageContent').innerHTML = `
+    <div class="sub-card">
+      <h2>💣 Мины</h2>
+      <div id="multiplierDisplay" style="font-size:14px; color:var(--green); margin-bottom:10px;">Множитель: x1.0</div>
+      <div class="mines-grid">${cellsHtml}</div>
+      <button class="primary-btn" id="claimBtn" onclick="claimMines('${gameId}')" style="background:var(--green); color:#000; display:none;">Забрать выигрыш</button>
+      <button class="back-btn" onclick="showGames()" style="margin-top:10px; width:100%;">Выйти</button>
+    </div>`;
+}
+
+window.openMineCell = async function(gameId, cellIdx) {
+  try {
+    const res = await fetch(`${API_BASE}/mines/open`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ initData: tg?.initData || "", game_id: gameId, cell_index: cellIdx })
+    });
+    const data = await res.json();
+    const btn = document.querySelector(`[data-idx="${cellIdx}"]`);
+    
+    if (data.status === "boom") {
+      btn.classList.add("boom");
+      btn.textContent = "💥";
+      showToast("Вы подорвались!");
+      setTimeout(showGames, 2000);
+    } else if (data.status === "safe") {
+      btn.classList.add("safe", "opened");
+      btn.textContent = "💎";
+      btn.disabled = true;
+      $('#multiplierDisplay').textContent = `Множитель: x${data.multiplier}`;
+      $('#claimBtn').style.display = "block";
+    }
+  } catch (e) {
+    showToast("Ошибка запроса");
+  }
+};
+
+window.claimMines = async function(gameId) {
+  try {
+    const res = await fetch(`${API_BASE}/mines/claim`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ initData: tg?.initData || "", game_id: gameId })
+    });
+    const data = await res.json();
+    if (res.ok) {
+      state.balance = data.balance;
+      $('#balanceValue').textContent = state.balance;
+      showToast(`Выигрыш забран: +${data.win}!`);
+      showGames();
+    }
+  } catch (e) {
+    showToast("Ошибка");
   }
 };
 
 function showGame(page) {
-  const data = gameData[page];
-  if (!data) return;
-
-  gamesSection.classList.add('hidden');
-  subPage.classList.remove('hidden');
-  setActiveTab('games');
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-
-  subPageContent.innerHTML = `
-    <div class="sub-card game-page">
-      <button class="back-btn" id="innerBack">‹ Игры</button>
-      <div class="large-game-icon">${data.icon}</div>
-      <span class="section-kicker">${data.tag}</span>
-      <h2>${data.title}</h2>
-      <p class="lead-text">${data.text}</p>
-      <button class="primary-btn" id="demoAction">Скоро будет доступно</button>
-    </div>`;
-
-  $('#innerBack').addEventListener('click', showGames);
-  $('#demoAction').addEventListener('click', () => showToast('Модуль уже в разработке 🚀'));
+  if (page === 'mines') {
+    $('#subPageContent').innerHTML = `
+      <div class="sub-card">
+        <h2>💣 Мины</h2>
+        <div style="margin:15px 0;">
+          <label style="font-size:11px;">Ставка:</label>
+          <input type="number" id="minesBet" value="10" style="width:100%; padding:8px; background:#07080d; border:1px solid var(--line); color:#fff; border-radius:8px;">
+        </div>
+        <div style="margin:15px 0;">
+          <label style="font-size:11px;">Сложность:</label>
+          <select id="minesCount" style="width:100%; padding:8px; background:#07080d; border:1px solid var(--line); color:#fff; border-radius:8px;">
+            <option value="3">Easy (3 мины)</option>
+            <option value="6">Medium (6 мин)</option>
+            <option value="10">Hardcore (10 мин)</option>
+          </select>
+        </div>
+        <button class="primary-btn" onclick="startMinesGame()">Начать игру</button>
+      </div>`;
+  } else {
+    $('#subPageContent').innerHTML = `
+      <div class="sub-card">
+        <h2>Скоро</h2>
+        <p>Этот раздел находится в разработке.</p>
+      </div>`;
+  }
+  $('#gamesSection').classList.add('hidden');
+  $('#subPage').classList.remove('hidden');
 }
 
-$$('.nav-item').forEach(item => {
-  item.addEventListener('click', () => {
-    if (item.dataset.tab === 'games') showGames();
-    if (item.dataset.tab === 'top') showTop();
-    if (item.dataset.tab === 'profile') showProfile();
-  });
+$('#topUpBtn').addEventListener('click', () => {
+  const uId = state.user?.id || "ID";
+  const modal = document.createElement('div');
+  modal.className = 'modal-overlay';
+  modal.innerHTML = `
+    <div class="modal-card">
+      <h3>💎 Пополнение</h3>
+      <p style="font-size:11px; line-height:1.5; margin:10px 0;">
+        Отправьте подарок аккаунту <b>@DurovX4</b> и укажите свой Telegram ID: <code>${uId}</code> для ручного зачисления.
+      </p>
+      <button class="primary-btn" onclick="this.closest('.modal-overlay').remove()">Закрыть</button>
+    </div>`;
+  document.body.appendChild(modal);
 });
 
-$$('[data-page]').forEach(card => {
+$('#soundBtn').addEventListener('click', async () => {
+  if (!state.audio) {
+    try {
+      const res = await fetch(`${API_BASE}/music`);
+      const data = await res.json();
+      if (data.music_url) {
+        state.audio = new Audio(data.music_url);
+        state.audio.loop = true;
+      }
+    } catch (e) {}
+  }
+  if (state.audio) {
+    if (state.audioPlaying) {
+      state.audio.pause();
+      state.audioPlaying = false;
+      showToast('Музыка выключена');
+    } else {
+      state.audio.play().then(() => {
+        state.audioPlaying = true;
+        showToast('Музыка играет');
+      }).catch(() => showToast('Ошибка автовоспроизведения'));
+    }
+  } else {
+    showToast('Трек не настроен');
+  }
+});
+
+$$('.nav-item').forEach(item => {   item.addEventListener('click', () => {     const tab = item.dataset.tab;     if (tab === 'games') showGames();     if (tab === 'top') showTop();     if (tab === 'profile') showProfile();   }); });  $$
+('[data-page]').forEach(card => {
   card.addEventListener('click', () => showGame(card.dataset.page));
 });
 
 $('#backBtn').addEventListener('click', showGames);
-
-$('#soundBtn').addEventListener('click', () => {
-  state.sound = !state.sound;
-  $('#soundBtn').textContent = state.sound ? '♪' : '×';
-  showToast(state.sound ? 'Звук включён' : 'Звук выключен');
-});
-
-
-balance.textContent = state.balance.toLocaleString('ru-RU');
-console.log('LinkGuard 2.0 Mini App UI v2 loaded');
+fetchUserData();
