@@ -7,10 +7,9 @@
   --line: rgba(255,255,255,.08);
   --purple: #795cff;
   --blue: #3e8cff;
-  --cyan: #34d8ff;
-  --red: #ff405d;
-  --orange: #ff9d42;
   --green: #40e696;
+  --red: #ff405d;
+  --gold: #ffd95e;
   --nav-h: 76px;
 }
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -21,462 +20,59 @@ button { font: inherit; color: inherit; border: 0; cursor: pointer; }
 .topbar { height: 66px; padding: 10px 17px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 20; background: rgba(7,8,13,.78); backdrop-filter: blur(18px); border-bottom: 1px solid rgba(255,255,255,.035); }
 .brand-wrap { display: flex; align-items: center; gap: 10px; }
 .brand-mark { width: 38px; height: 38px; border-radius: 12px; display: grid; place-items: center; font-size: 12px; font-weight: 900; background: linear-gradient(135deg, #8a6cff, #4a3dc7); box-shadow: 0 8px 28px rgba(121,92,255,.3); }
-.brand-name { font-size: 16px; font-weight: 900; letter-spacing: -.4px; }
-.brand-sub { font-size: 8px; letter-spacing: 2px; color: var(--muted); margin-top: 2px; }
+.brand-name { font-size: 16px; font-weight: 900; }
+.brand-sub { font-size: 8px; letter-spacing: 2px; color: var(--muted); }
 .icon-btn { width: 40px; height: 40px; border-radius: 13px; background: var(--panel); border: 1px solid var(--line); color: #d9ddeb; font-size: 19px; }
-.icon-btn:active { transform: scale(.95); }
+
 .content { padding: 13px 15px 0; }
-.balance-area { min-height: 106px; display: flex; align-items: center; justify-content: center; gap: 13px; }
-.balance-orb { width: 94px; height: 94px; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; background: radial-gradient(circle at 35% 25%, rgba(255,218,94,.16), rgba(121,92,255,.10) 45%, rgba(15,18,27,.98) 72%); border: 1px solid rgba(255,218,94,.2); box-shadow: 0 12px 34px rgba(0,0,0,.25), inset 0 0 24px rgba(121,92,255,.08); }
-.balance-star { color: #ffd95e; font-size: 12px; line-height: 1; margin-bottom: 3px; }
-.balance-orb span { color: #858c9d; font-size: 7px; font-weight: 900; letter-spacing: 1.1px; }
-.balance-orb strong { font-size: 20px; line-height: 1.05; letter-spacing: -.7px; margin-top: 2px; }
-.balance-orb small { color: #72798b; font-size: 7px; margin-top: 2px; }
-.top-up-btn { background: transparent; color: #aaa2ff; font-size: 10px; font-weight: 800; padding: 7px 0; }
-.top-up-btn:active { opacity: .65; transform: scale(.96); }
-.games-section { margin-top: 17px; }
-.section-head { display: flex; justify-content: space-between; align-items: end; margin-bottom: 12px; }
-.section-head h2 { margin: 4px 0 0; font-size: 23px; letter-spacing: -.6px; }
+.balance-container { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 15px; }
+.balance-pill { display: flex; align-items: center; gap: 6px; padding: 8px 14px; background: var(--panel); border: 1px solid var(--line); border-radius: 20px; font-size: 14px; font-weight: 800; }
+.balance-pill.stars { border-color: rgba(255,217,94,0.3); color: var(--gold); }
+.plus-btn { width: 24px; height: 24px; border-radius: 50%; background: var(--blue); color: #fff; display: grid; place-items: center; font-size: 14px; font-weight: 900; cursor: pointer; }
+
+/* LIVE Лента */
+.live-strip-wrap { margin-bottom: 15px; position: relative; border: 1px solid rgba(64,230,150,.2); border-radius: 14px; padding: 6px 10px; background: rgba(15,18,27,0.6); }
+.live-label { font-size: 9px; font-weight: 900; color: var(--green); letter-spacing: 1px; margin-bottom: 4px; display: flex; align-items: center; gap: 5px; }
+.live-pulse { width: 6px; height: 6px; border-radius: 50%; background: var(--green); box-shadow: 0 0 8px var(--green); }
+.live-strip { display: flex; gap: 10px; overflow-x: auto; scrollbar-width: none; font-size: 11px; }
+.live-strip::-webkit-scrollbar { display: none; }
+.live-item { background: var(--panel-2); padding: 5px 10px; border-radius: 10px; white-space: nowrap; border: 1px solid var(--line); }
+
+.games-section { margin-top: 10px; }
 .featured-games { display: grid; gap: 12px; }
-.featured-card { position: relative; display: flex; align-items: center; width: 100%; min-height: 106px; padding: 16px; border-radius: 19px; text-align: left; overflow: hidden; border: 1px solid rgba(255,255,255,.09); box-shadow: 0 16px 38px rgba(0,0,0,.2); transition: transform .16s ease, filter .16s ease; }
-.featured-card:active { transform: scale(.982); filter: brightness(.94); }
-.featured-card.daily { background: linear-gradient(135deg, #c7891f 0%, #6e4218 45%, #25140c 100%); }
-.featured-card.cases { background: linear-gradient(135deg, #4d3de1 0%, #274ebf 48%, #121a48 100%); }
-.featured-card.mines { background: linear-gradient(135deg, #9c263d 0%, #571525 48%, #1b0c13 100%); }
-.featured-card.duel { background: linear-gradient(135deg, #087f9d 0%, #164d82 48%, #0b172d 100%); }
-.featured-icon { width: 58px; height: 58px; flex: 0 0 auto; display: grid; place-items: center; margin-right: 14px; border-radius: 17px; font-size: 29px; background: rgba(0,0,0,.2); border: 1px solid rgba(255,255,255,.13); }
-.featured-info { min-width: 0; position: relative; z-index: 2; }
-.card-tag { display: block; font-size: 8px; font-weight: 900; letter-spacing: 1.4px; color: rgba(255,255,255,.72); margin-bottom: 4px; }
-.featured-info h3 { margin: 0 0 5px; font-size: 19px; line-height: 1.08; letter-spacing: -.4px; }
-.featured-info p { margin: 0; font-size: 11px; line-height: 1.35; color: rgba(255,255,255,.72); }
-.card-arrow { position: relative; z-index: 2; margin-left: auto; padding-left: 10px; font-size: 30px; font-weight: 300; color: rgba(255,255,255,.72); }
+.featured-card { position: relative; display: flex; align-items: center; width: 100%; min-height: 90px; padding: 16px; border-radius: 19px; text-align: left; overflow: hidden; border: 1px solid rgba(255,255,255,.09); }
+.featured-card.daily { background: linear-gradient(135deg, #c7891f 0%, #6e4218 100%); }
+.featured-card.cases { background: linear-gradient(135deg, #4d3de1 0%, #274ebf 100%); }
+.featured-card.mines { background: linear-gradient(135deg, #9c263d 0%, #571525 100%); }
+.featured-card.duel { background: linear-gradient(135deg, #087f9d 0%, #164d82 100%); }
+.featured-icon { width: 48px; height: 48px; flex: 0 0 auto; display: grid; place-items: center; margin-right: 14px; border-radius: 14px; font-size: 24px; background: rgba(0,0,0,.2); }
+.featured-info h3 { margin: 0 0 3px; font-size: 17px; }
+.featured-info p { margin: 0; font-size: 11px; color: rgba(255,255,255,.7); }
+.card-arrow { margin-left: auto; font-size: 24px; color: rgba(255,255,255,.7); }
+
 .bottom-nav { position: fixed; z-index: 30; left: 50%; bottom: 0; transform: translateX(-50%); width: min(760px,100%); height: calc(var(--nav-h) + env(safe-area-inset-bottom)); padding: 7px 14px env(safe-area-inset-bottom); display: grid; grid-template-columns: repeat(3,1fr); background: rgba(10,12,18,.92); backdrop-filter: blur(22px); border-top: 1px solid rgba(255,255,255,.08); }
 .nav-item { background: transparent; border-radius: 15px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; color: #70778a; font-size: 10px; font-weight: 700; }
 .nav-item.active { color: #fff; background: rgba(121,92,255,.12); }
-.nav-icon { font-size: 20px; line-height: 20px; }
+.nav-icon { font-size: 20px; }
+
 .hidden { display: none !important; }
-.page-view { margin-top: 10px; }
-.back-btn { background: #11151e; border: 1px solid var(--line); padding: 10px 14px; border-radius: 12px; color: #c4cad8; font-size: 12px; margin-bottom: 13px; }
-.sub-card { background: var(--panel); border: 1px solid var(--line); border-radius: 20px; padding: 20px; box-shadow: 0 18px 45px rgba(0,0,0,.2); }
-.sub-card h2 { margin: 5px 0 8px; font-size: 25px; letter-spacing: -.7px; }
-.sub-card p { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.6; }
-.primary-btn { width: 100%; margin-top: 14px; padding: 13px 15px; border-radius: 14px; background: linear-gradient(135deg, #795cff, #5142d8); font-size: 12px; font-weight: 800; box-shadow: 0 10px 25px rgba(121,92,255,.2); }
-.primary-btn:active { transform: scale(.985); }
-.toast { position: fixed; z-index: 50; left: 50%; bottom: calc(var(--nav-h) + 15px); transform: translate(-50%,15px); background: #f3f4f8; color: #10131b; padding: 10px 15px; border-radius: 13px; font-size: 11px; font-weight: 800; opacity: 0; pointer-events: none; transition: .22s; box-shadow: 0 10px 30px rgba(0,0,0,.35); }
+.sub-card { background: var(--panel); border: 1px solid var(--line); border-radius: 20px; padding: 20px; }
+.primary-btn { width: 100%; margin-top: 14px; padding: 13px; border-radius: 14px; background: linear-gradient(135deg, #795cff, #5142d8); font-size: 12px; font-weight: 800; }
+.back-btn { background: #11151e; border: 1px solid var(--line); padding: 8px 12px; border-radius: 10px; color: #c4cad8; font-size: 11px; margin-bottom: 12px; }
+.toast { position: fixed; z-index: 50; left: 50%; bottom: 90px; transform: translate(-50%,15px); background: #f3f4f8; color: #10131b; padding: 10px 15px; border-radius: 13px; font-size: 11px; font-weight: 800; opacity: 0; pointer-events: none; transition: .22s; }
 .toast.show { opacity: 1; transform: translate(-50%,0); }
-.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.7); z-index: 100; display: flex; align-items: center; justify-content: center; padding: 20px; }
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.75); z-index: 100; display: flex; align-items: center; justify-content: center; padding: 20px; }
 .modal-card { background: var(--panel-2); border: 1px solid var(--line); border-radius: 20px; padding: 20px; width: 100%; max-width: 400px; text-align: center; }
-.mines-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin: 15px 0; }
-.mine-cell { aspect-ratio: 1; background: #1c2130; border: 1px solid var(--line); border-radius: 10px; font-size: 18px; display: grid; place-items: center; }
+
+/* Премиум подсветка */
+.is-premium-user { border: 2px solid var(--gold) !important; box-shadow: 0 0 15px rgba(255,217,94,0.3); }
+
+/* Сетка мин */
+.mines-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 15px 0; }
+.mines-grid-5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin: 15px 0; }
+.mines-grid-7 { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; margin: 15px 0; }
+.mine-cell { aspect-ratio: 1; background: #1c2130; border: 1px solid var(--line); border-radius: 10px; font-size: 16px; display: grid; place-items: center; }
 .mine-cell.opened { background: #262e45; }
 .mine-cell.boom { background: var(--red); }
 .mine-cell.safe { background: var(--green); color: #000; }
-@media (min-width: 600px) {
-  .content { padding-left: 24px; padding-right: 24px; }
-  .featured-games { grid-template-columns: 1fr 1fr; }
-}
-```[cite: 13]
-
-### 2. `website/index.html`
-```html
-<!doctype html>
-<html lang="ru">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-  <meta name="theme-color" content="#07080d">
-  <title>LinkGuard</title>
-  <link rel="stylesheet" href="styles.css">
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
-</head>
-<body>
-  <div class="app-shell">
-    <header class="topbar">
-      <div class="brand-wrap">
-        <div class="brand-mark">LG</div>
-        <div>
-          <div class="brand-name">LinkGuard</div>
-          <div class="brand-sub">GAME HUB</div>
-        </div>
-      </div>
-      <button class="icon-btn" id="soundBtn" aria-label="Музыка">♫</button>
-    </header>
-
-    <main class="content">
-      <section class="balance-area">
-        <div class="balance-orb">
-          <div class="balance-star">★</div>
-          <span>БАЛАНС</span>
-          <strong id="balanceValue">0</strong>
-          <small>очков</small>
-        </div>
-        <button class="top-up-btn" id="topUpBtn">Пополнить</button>
-      </section>
-
-      <section class="games-section" id="gamesSection">
-        <div class="section-head">
-          <div>
-            <span class="section-kicker">АРКАДА</span>
-            <h2>Игры</h2>
-          </div>
-        </div>
-
-        <div class="featured-games">
-          <button class="featured-card daily" data-page="daily">
-            <div class="featured-icon">🎁</div>
-            <div class="featured-info">
-              <span class="card-tag">БЕСПЛАТНО</span>
-              <h3>Бесплатный кейс</h3>
-              <p>Открывай один раз в день</p>
-            </div>
-            <span class="card-arrow">›</span>
-          </button>
-
-          <button class="featured-card cases" data-page="cases">
-            <div class="featured-icon">🎁</div>
-            <div class="featured-info">
-              <span class="card-tag">НАГРАДЫ</span>
-              <h3>Кейсы</h3>
-              <p>Редкие награды и ресурсы</p>
-            </div>
-            <span class="card-arrow">›</span>
-          </button>
-
-          <button class="featured-card mines" data-page="mines">
-            <div class="featured-icon">💣</div>
-            <div class="featured-info">
-              <span class="card-tag">GAME</span>
-              <h3>Мины</h3>
-              <p>Открывай клетки и забирай банк</p>
-            </div>
-            <span class="card-arrow">›</span>
-          </button>
-
-          <button class="featured-card duel" data-page="duel">
-            <div class="featured-icon">⚔️</div>
-            <div class="featured-info">
-              <span class="card-tag">PVP</span>
-              <h3>PvP Дуэль</h3>
-              <p>Сражение с игроком</p>
-            </div>
-            <span class="card-arrow">›</span>
-          </button>
-        </div>
-      </section>
-
-      <section class="page-view hidden" id="subPage">
-        <button class="back-btn" id="backBtn">‹ Назад</button>
-        <div id="subPageContent"></div>
-      </section>
-    </main>
-
-    <nav class="bottom-nav" aria-label="Главная навигация">
-      <button class="nav-item active" data-tab="games">
-        <span class="nav-icon">🎮</span><span>Игры</span>
-      </button>
-      <button class="nav-item" data-tab="top">
-        <span class="nav-icon">🏆</span><span>Топы</span>
-      </button>
-      <button class="nav-item" data-tab="profile">
-        <span class="nav-icon">👤</span><span>Профиль</span>
-      </button>
-    </nav>
-  </div>
-
-  <div class="toast" id="toast"></div>
-  <script src="app.js"></script>
-</body>
-</html>
-```[cite: 14]
-
-### 3. `website/app.js`
-```javascript
-const tg = window.Telegram?.WebApp;
-if (tg) {
-  tg.ready();
-  tg.expand();
-}
-
-// Укажи здесь HTTPS-адрес твоего запущенного бэкенда на Raven Host (без слеша на конце)
-const API_BASE = "https://tex.ravenhost.space:19278/api/v1"; 
-
-const $ = (selector) => document.querySelector(selector); const $$ = (selector) => [...document.querySelectorAll(selector)];
-
-let state = {
-  balance: 0,
-  user: tg?.initDataUnsafe?.user || { id: 12345, first_name: "Тест" },
-  audioPlaying: false,
-  audio: null
-};
-
-function showToast(message) {
-  let toast = $('#toast');
-  toast.textContent = message;
-  toast.classList.add('show');
-  setTimeout(() => toast.classList.remove('show'), 2000);
-}
-
-async function fetchUserData() {
-  try {
-    const res = await fetch(`${API_BASE}/user`, {
-      headers: { "init-data": tg?.initData || "" }
-    });
-    if (res.ok) {
-      const data = await res.json();
-      state.balance = data.balance;
-      $('#balanceValue').textContent = state.balance.toLocaleString('ru-RU');     }   } catch (e) {     console.log("Offline mode / API error");   } }  function setActiveTab(tab) {   $$('.nav-item').forEach(item => {
-    item.classList.toggle('active', item.dataset.tab === tab);
-  });
-}
-
-function showGames() {
-  $('#gamesSection').classList.remove('hidden');
-  $('#subPage').classList.add('hidden');
-  setActiveTab('games');
-}
-
-async function showTop() {
-  $('#gamesSection').classList.add('hidden');
-  $('#subPage').classList.remove('hidden');
-  setActiveTab('top');
-
-  let leadersHtml = '<p>Загрузка топа...</p>';
-  let hallHtml = '<p>Загрузка Зала Славы...</p>';
-
-  try {
-    const [resL, resH] = await Promise.all([
-      fetch(`${API_BASE}/leaderboard`),
-      fetch(`${API_BASE}/halloffame`)
-    ]);
-    if (resL.ok) {
-      const data = await resL.json();
-      leadersHtml = data.map((item, idx) => `
-        <div class="mini-row"><span class="rank-num">#${idx+1}</span><span class="rank-name">${item.name}</span><span class="rank-score">${item.balance} ★</span></div>
-      `).join('');
-    }
-    if (resH.ok) {
-      const data = await resH.json();
-      hallHtml = data.map((item, idx) => `
-        <div class="mini-row"><span class="rank-num"> pioneer </span><span class="rank-name">${item.name}</span></div>
-      `).join('');
-    }
-  } catch (e) {}
-
-  $('#subPageContent').innerHTML = `
-    <div class="sub-card">
-      <h2>🏆 Таблица лидеров TOP-10</h2>
-      <div class="mini-list">${leadersHtml}</div>
-      <h2 style="margin-top:20px;">⭐ Hall of Fame</h2>
-      <p style="font-size:10px; color:var(--muted); margin-bottom:10px;">Первые тестировщики проекта</p>
-      <div class="mini-list">${hallHtml}</div>
-    </div>`;
-}
-
-function showProfile() {
-  $('#gamesSection').classList.add('hidden');
-  $('#subPage').classList.remove('hidden');
-  setActiveTab('profile');
-
-  const u = state.user;
-  $('#subPageContent').innerHTML = `
-    <div class="sub-card">
-      <h2>👤 Профиль</h2>
-      <p><b>Имя:</b> ${u.first_name || 'Игрок'}</p>
-      <p><b>ID:</b> <span id="myTelegramId">${u.id}</span></p>
-      <p><b>Баланс:</b> ${state.balance} очков</p>
-      <button class="primary-btn" onclick="navigator.clipboard.writeText('${u.id}'); showToast('ID скопирован!')">Скопировать мой ID</button>
-    </div>`;
-}
-
-// Запуск игры Мины
-async function startMinesGame() {
-  const bet = parseInt($('#minesBet').value) || 10;
-  const minesCount = parseInt($('#minesCount').value) || 3;
-
-  try {
-    const res = await fetch(`${API_BASE}/mines/start`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ initData: tg?.initData || "", bet, mines_count: minesCount })
-    });
-    const data = await res.json();
-    if (!res.ok) {
-      showToast(data.detail || "Ошибка запуска");
-      return;
-    }
-    state.balance = data.balance;
-    $('#balanceValue').textContent = state.balance;
-    renderMinesBoard(data.game_id);
-  } catch (e) {
-    showToast("Ошибка соединения с сервером");
-  }
-}
-
-function renderMinesBoard(gameId) {
-  let cellsHtml = '';
-  for (let i = 0; i < 25; i++) {
-    cellsHtml += `<button class="mine-cell" data-idx="${i}" onclick="openMineCell('${gameId}', ${i})">❓</button>`;
-  }
-  $('#subPageContent').innerHTML = `
-    <div class="sub-card">
-      <h2>💣 Игра: Мины</h2>
-      <div id="multiplierDisplay" style="font-size:14px; color:var(--green); margin-bottom:10px;">Множитель: x1.0</div>
-      <div class="mines-grid">${cellsHtml}</div>
-      <button class="primary-btn" id="claimBtn" onclick="claimMines('${gameId}')" style="background:var(--green); color:#000; display:none;">Забрать выигрыш</button>
-      <button class="back-btn" onclick="showGames()" style="margin-top:10px; width:100%;">Выйти в меню</button>
-    </div>`;
-}
-
-window.openMineCell = async function(gameId, cellIdx) {
-  try {
-    const res = await fetch(`${API_BASE}/mines/open`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ initData: tg?.initData || "", game_id: gameId, cell_index: cellIdx })
-    });
-    const data = await res.json();
-    const btn = document.querySelector(`[data-idx="${cellIdx}"]`);
-    
-    if (data.status === "boom") {
-      btn.classList.add("boom");
-      btn.textContent = "💥";
-      showToast("Вы подорвались на мине!");
-      setTimeout(showGames, 2000);
-    } else if (data.status === "safe") {
-      btn.classList.add("safe", "opened");
-      btn.textContent = "💎";
-      btn.disabled = true;
-      $('#multiplierDisplay').textContent = `Множитель: x${data.multiplier}`;
-      $('#claimBtn').style.display = "block";
-    }
-  } catch (e) {
-    showToast("Ошибка запроса");
-  }
-};
-
-window.claimMines = async function(gameId) {
-  try {
-    const res = await fetch(`${API_BASE}/mines/claim`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ initData: tg?.initData || "", game_id: gameId })
-    });
-    const data = await res.json();
-    if (res.ok) {
-      state.balance = data.balance;
-      $('#balanceValue').textContent = state.balance;
-      showToast(`Выигрыш забран: +${data.win} очков!`);
-      showGames();
-    }
-  } catch (e) {
-    showToast("Ошибка");
-  }
-};
-
-function showGame(page) {
-  if (page === 'mines') {
-    $('#subPageContent').innerHTML = `
-      <div class="sub-card">
-        <h2>💣 Мины</h2>
-        <p>Выберите ставку и количество мин:</p>
-        <div style="margin:15px 0;">
-          <label style="font-size:11px;">Ставка (очков):</label>
-          <input type="number" id="minesBet" value="10" style="width:100%; padding:8px; background:#07080d; border:1px solid var(--line); color:#fff; border-radius:8px; margin-top:5px;">
-        </div>
-        <div style="margin:15px 0;">
-          <label style="font-size:11px;">Сложность (мины):</label>
-          <select id="minesCount" style="width:100%; padding:8px; background:#07080d; border:1px solid var(--line); color:#fff; border-radius:8px; margin-top:5px;">
-            <option value="3">Easy (3 мины)</option>
-            <option value="6">Medium (6 мин)</option>
-            <option value="10">Hardcore (10 мин)</option>
-          </select>
-        </div>
-        <button class="primary-btn" onclick="startMinesGame()">Начать игру</button>
-      </div>`;
-  } else {
-    $('#subPageContent').innerHTML = `
-      <div class="sub-card">
-        <h2>Раздел в разработке</h2>
-        <p>Скоро здесь появится новая игровая механика!</p>
-      </div>`;
-  }
-  $('#gamesSection').classList.add('hidden');
-  $('#subPage').classList.remove('hidden');
-}
-
-// Модальное окно пополнения
-$('#topUpBtn').addEventListener('click', () => {
-  const uId = state.user?.id || "Не определен";
-  const modal = document.createElement('div');
-  modal.className = 'modal-overlay';
-  modal.innerHTML = `
-    <div class="modal-card">
-      <h3>💎 Пополнение баланса</h3>
-      <p style="font-size:11px; line-height:1.5; margin:10px 0;">
-        Чтобы пополнить баланс, отправьте подарок любой стоимости аккаунту <b>@DurovX4</b>.<br><br>
-        Обязательно укажите свой Telegram ID: <code>${uId}</code>, чтобы администратор начислил баланс вручную после проверки.
-      </p>
-      <button class="primary-btn" onclick="this.closest('.modal-overlay').remove()">Понятно</button>
-    </div>`;
-  document.body.appendChild(modal);
-});
-
-// Управление музыкой
-$('#soundBtn').addEventListener('click', async () => {
-  if (!state.audio) {
-    try {
-      const res = await fetch(`${API_BASE}/music`);
-      const data = await res.json();
-      if (data.music_url) {
-        state.audio = new Audio(data.music_url);
-        state.audio.loop = true;
-      }
-    } catch (e) {}
-  }
-  
-  if (state.audio) {
-    if (state.audioPlaying) {
-      state.audio.pause();
-      state.audioPlaying = false;
-      $('#soundBtn').textContent = '♫';
-      showToast('Музыка выключена');
-    } else {
-      state.audio.play().then(() => {
-        state.audioPlaying = true;
-        $('#soundBtn').textContent = '×';
-        showToast('Музыка играет');
-      }).catch(() => showToast('Ошибка автовоспроизведения звука'));
-    }
-  } else {
-    showToast('Трек не настроен администратором');
-  }
-});
-
-$$('.nav-item').forEach(item => {   item.addEventListener('click', () => {     const tab = item.dataset.tab;     if (tab === 'games') showGames();     if (tab === 'top') showTop();     if (tab === 'profile') showProfile();   }); });  $$
-('[data-page]').forEach(card => {
-  card.addEventListener('click', () => showGame(card.dataset.page));
-});
-
-$('#backBtn').addEventListener('click', showGames);
-
-fetchUserData();
-```[cite: 14, 15]
-
----
-
-## 📋 Пошаговая инструкция для тебя (простыми словами)
-
-### Шаг 1. Делаем резервную копию базы данных и `.env` на сервере
-1. Зайди в панель **Raven Host** во вкладку **Files**.
-2. Найди файл базы данных `linkguard.db` и файл конфигурации `.env`.
-3. Скачай их к себе на компьютер в качестве резервной копии, чтобы ни в коем случае не потерять текущих пользователей и настройки.
-
-### Шаг 2. Обновляем файлы на сервере
-1. Замени файлы в папке сервера (`app.py`, `config.py`, `requirements.txt`).
-2. Добавь новые папки и файлы (`api/routes.py`, `bot/handlers.py`, `database/database.py`, `tests/test_main.py`).
-3. Убедись, что твой файл `.env` на сервере остался нетронутым и в нем прописаны реальные `BOT_TOKEN` и `ADMIN_USER_ID`.
-
-### Шаг 3. Устанавливаем зависимости и проверяем запуск
-1. Во вкладке **Startup** на хостинге убедись, что команда запуска настроена через `python -m uvicorn`:
-   ```bash
-   if [[ -d .git ]] && [[ "0" == "1" ]]; then git pull; fi; if [[ -f /home/container/${REQUIREMENTS_FILE} ]]; then pip install -U --prefix .local -r ${REQUIREMENTS_FILE}; fi; exec /usr/local/bin/python -m uvicorn app:app --host 0.0.0.0 --port ${SERVER_PORT:-8000}
+.mini-row { display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 12px; background: #0d1017; border: 1px solid var(--line); margin-bottom: 6px; font-size: 11px; }

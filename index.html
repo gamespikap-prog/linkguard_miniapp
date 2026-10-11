@@ -18,73 +18,15 @@
           <div class="brand-sub">GAME HUB</div>
         </div>
       </div>
-      <button class="icon-btn" id="soundBtn" aria-label="Музыка">♫</button>
+      <button class="icon-btn" id="soundBtn" aria-label="Музыка / Админка">♫</button>
     </header>
 
     <main class="content">
-      <section class="balance-area">
-        <div class="balance-orb">
-          <div class="balance-star">★</div>
-          <span>БАЛАНС</span>
-          <strong id="balanceValue">0</strong>
-          <small>очков</small>
-        </div>
-        <button class="top-up-btn" id="topUpBtn">Пополнить</button>
-      </section>
-
       <section class="games-section" id="gamesSection">
-        <div class="section-head">
-          <div>
-            <span class="section-kicker">АРКАДА</span>
-            <h2>Игры</h2>
-          </div>
-        </div>
-
-        <div class="featured-games">
-          <button class="featured-card daily" data-page="daily">
-            <div class="featured-icon">🎁</div>
-            <div class="featured-info">
-              <span class="card-tag">БЕСПЛАТНО</span>
-              <h3>Бесплатный кейс</h3>
-              <p>Открывай один раз в день</p>
-            </div>
-            <span class="card-arrow">›</span>
-          </button>
-
-          <button class="featured-card cases" data-page="cases">
-            <div class="featured-icon">🎁</div>
-            <div class="featured-info">
-              <span class="card-tag">НАГРАДЫ</span>
-              <h3>Кейсы</h3>
-              <p>Редкие награды и ресурсы</p>
-            </div>
-            <span class="card-arrow">›</span>
-          </button>
-
-          <button class="featured-card mines" data-page="mines">
-            <div class="featured-icon">💣</div>
-            <div class="featured-info">
-              <span class="card-tag">GAME</span>
-              <h3>Мины</h3>
-              <p>Открывай клетки и забирай банк</p>
-            </div>
-            <span class="card-arrow">›</span>
-          </button>
-
-          <button class="featured-card duel" data-page="duel">
-            <div class="featured-icon">⚔️</div>
-            <div class="featured-info">
-              <span class="card-tag">PVP</span>
-              <h3>PvP Дуэль</h3>
-              <p>Сражение с игроком</p>
-            </div>
-            <span class="card-arrow">›</span>
-          </button>
-        </div>
+        <!-- Динамически рендерится из app.js (баланс, LIVE, игры) -->
       </section>
 
       <section class="page-view hidden" id="subPage">
-        <button class="back-btn" id="backBtn">‹ Назад</button>
         <div id="subPageContent"></div>
       </section>
     </main>
@@ -94,7 +36,7 @@
         <span class="nav-icon">🎮</span><span>Игры</span>
       </button>
       <button class="nav-item" data-tab="top">
-        <span class="nav-icon">🏆</span><span>Топы</span>
+        <span class="nav-icon">🏆</span><span>Топ</span>
       </button>
       <button class="nav-item" data-tab="profile">
         <span class="nav-icon">👤</span><span>Профиль</span>
