@@ -18,29 +18,23 @@
           <div class="brand-sub">GAME HUB</div>
         </div>
       </div>
-      <button class="icon-btn" id="soundBtn" aria-label="Музыка / Админка">♫</button>
+      <div class="header-right">
+        <button class="icon-btn hidden" id="adminBtn" aria-label="Админка">⚙️</button>
+        <button class="icon-btn" id="soundBtn" aria-label="Музыка">♫</button>
+      </div>
     </header>
 
     <main class="content">
-      <section class="games-section" id="gamesSection">
-        <!-- Динамически рендерится из app.js (баланс, LIVE, игры) -->
-      </section>
-
+      <section class="games-section" id="gamesSection"></section>
       <section class="page-view hidden" id="subPage">
         <div id="subPageContent"></div>
       </section>
     </main>
 
-    <nav class="bottom-nav" aria-label="Главная навигация">
-      <button class="nav-item active" data-tab="games">
-        <span class="nav-icon">🎮</span><span>Игры</span>
-      </button>
-      <button class="nav-item" data-tab="top">
-        <span class="nav-icon">🏆</span><span>Топ</span>
-      </button>
-      <button class="nav-item" data-tab="profile">
-        <span class="nav-icon">👤</span><span>Профиль</span>
-      </button>
+    <nav class="bottom-nav">
+      <button class="nav-item active" data-tab="games"><span class="nav-icon">🎮</span><span>Игры</span></button>
+      <button class="nav-item" data-tab="top"><span class="nav-icon">🏆</span><span>Топ</span></button>
+      <button class="nav-item" data-tab="profile"><span class="nav-icon">👤</span><span>Профиль</span></button>
     </nav>
   </div>
 

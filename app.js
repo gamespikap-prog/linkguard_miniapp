@@ -10,12 +10,10 @@ const $ = (selector) => document.querySelector(selector); const $$ = (selector) 
 
 let state = {
   balance: 0,
-  lunaBalance: 150, // Непополняемая валюта (награды из игр)
-  user: tg?.initDataUnsafe?.user || { id: 12345, first_name: "Тест" },
+  user: tg?.initDataUnsafe?.user || { id: 6591727196, first_name: "Админ" },
   isAdmin: false,
   isPremium: false,
-  audioPlaying: false,
-  audio: null
+  attemptsLeft: 50
 };
 
 function showToast(msg) {
@@ -36,8 +34,10 @@ async function fetchUserData() {
       state.balance = data.balance;
       state.isAdmin = data.is_admin;
       state.isPremium = data.is_premium;
-      $('#starBalance').textContent = state.balance.toLocaleString('ru-RU');
-      $('#lunaBalance').textContent = state.lunaBalance.toLocaleString('ru-RU');              if (state.isPremium) {         document.body.classList.add('is-premium-user');       }     }   } catch (e) {} }  function setActiveTab(tab) {   $$('.nav-item').forEach(item => {
+      state.attemptsLeft = data.attempts_left;
+      
+      if (state.isAdmin) {
+        $('#adminBtn').classList.remove('hidden');       }     }   } catch (e) {} }  function setActiveTab(tab) {   $$('.nav-item').forEach(item => {
     item.classList.toggle('active', item.dataset.tab === tab);
   });
 }
@@ -48,33 +48,42 @@ function showGames() {
   setActiveTab('games');
 }
 
-// Главная страница с двумя видами валюты и лентой LIVE
 function renderHomeContent() {
   $('#gamesSection').innerHTML = `
     <div class="balance-container">
-      <div class="balance-pill">🌕 <span id="lunaBalance">${state.lunaBalance}</span></div>
-      <div class="balance-pill stars">⭐ <span id="starBalance">${state.balance}</span> <div class="plus-btn" id="topUpBtn">+</div></div>
+      <div class="balance-pill">🌕 <span id="lunaBalance">${state.balance}</span></div>
+      <div class="balance-pill stars">⭐ <span>0</span> <div class="plus-btn" id="topUpBtn">+</div></div>
     </div>
 
     <div class="live-strip-wrap">
-      <div class="live-label"><span class="live-pulse"></span> LIVE ВЫИГРЫ</div>
-      <div class="live-strip">
-        <div class="live-item">🎁 Игрок Maksim забрал кейс</div>
-        <div class="live-item">💣 Игрок Alex выиграл в минах x2.5</div>
-        <div class="live-item">🏆 Игрок Dima поднялся в TOP-10</div>
+      <div class="live-label"><span class="live-pulse"></span> LIVE ВЫИГРЫШИ</div>
+      <div class="live-strip" id="liveStrip">
+        <span style="font-size:10px; color:var(--muted);">Ожидание первых побед сезона...</span>
       </div>
     </div>
 
-    <div class="section-head"><h2>Игры</h2></div>
     <div class="featured-games">
       <button class="featured-card daily" data-page="daily">
         <div class="featured-icon">🎁</div>
-        <div class="featured-info"><h3>Бесплатный кейс</h3><p>Один раз в день</p></div>
+        <div class="featured-info"><h3>Бесплатный кейс</h3><p>Один раз в день (В разработке)</p></div>
         <span class="card-arrow">›</span>
       </button>
+
+      <button class="featured-card cases" data-page="cases">
+        <div class="featured-icon">📦</div>
+        <div class="featured-info"><h3>Кейсы</h3><p>Редкие награды (В разработке)</p></div>
+        <span class="card-arrow">›</span>
+      </button>
+
       <button class="featured-card mines" data-page="mines">
         <div class="featured-icon">💣</div>
-        <div class="featured-info"><h3>Мины</h3><p>Угадайте верную ячейку</p></div>
+        <div class="featured-info"><h3>Мины</h3><p>Попыток на сегодня: <b>${state.attemptsLeft}</b></p></div>
+        <span class="card-arrow">›</span>
+      </button>
+
+      <button class="featured-card duel" data-page="duel">
+        <div class="featured-icon">⚔️</div>
+        <div class="featured-info"><h3>PvP Дуэль</h3><p>Сражение (В разработке)</p></div>
         <span class="card-arrow">›</span>
       </button>
     </div>`;
@@ -82,56 +91,81 @@ function renderHomeContent() {
   $('#topUpBtn').addEventListener('click', openTopUpModal);   $$('[data-page]').forEach(card => card.addEventListener('click', () => showGame(card.dataset.page)));
 }
 
-// Модальное окно пополнения с кликабельным юзернеймом и ID
 function openTopUpModal() {
-  const uId = state.user?.id || "123456";
+  const uId = state.user?.id || "6591727196";
   const modal = document.createElement('div');
   modal.className = 'modal-overlay';
   modal.innerHTML = `
     <div class="modal-card">
       <h3>💎 Пополнение баланса</h3>
       <p style="font-size:11px; line-height:1.6; margin:12px 0; color:var(--muted);">
-        Чтобы пополнить баланс звёзд, отправьте подарок любой стоимости аккаунту <a href="https://t.me/DurovX4" target="_blank" style="color:var(--blue); font-weight:bold; text-decoration:underline;">@DurovX4</a>.<br><br>
-        Ваш Telegram ID для указания администратору:<br>
-        <code style="background:#07080d; padding:4px 8px; border-radius:6px; color:#fff; font-size:13px;" id="copyIdText">${uId}</code>
+        Отправьте подарок любой стоимости аккаунту <a href="https://t.me/DurovX4" target="_blank" style="color:var(--blue); font-weight:bold;">@DurovX4</a>.<br><br>
+        Укажите ваш Telegram ID:<br>
+        <code style="background:#07080d; padding:4px 8px; border-radius:6px; color:#fff; font-size:13px;">${uId}</code>
       </p>
-      <button class="primary-btn" onclick="navigator.clipboard.writeText('${uId}'); showToast('ID скопирован!')" style="margin-bottom:8px;">Скопировать ID</button>
-      <button class="back-btn" onclick="this.closest('.modal-overlay').remove()" style="width:100%;">Закрыть</button>
+      <button class="primary-btn" onclick="navigator.clipboard.writeText('${uId}'); showToast('ID скопирован!')">Скопировать ID</button>
+      <button class="back-btn" onclick="this.closest('.modal-overlay').remove()" style="width:100%; margin-top:8px;">Закрыть</button>
     </div>`;
   document.body.appendChild(modal);
 }
 
-// РЕЙТИНГ с TOP-10 и кнопкой Доп
+// ТАЙМЕР СЕЗОНА И ТОП-10
+function startSeasonTimer() {
+  setInterval(() => {
+    const el = $('#seasonTimer');
+    if (!el) return;
+    const now = new Date();
+    const end = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+    const diff = Math.max(0, Math.floor((end - now) / 1000));
+    const d = Math.floor(diff / 86400);
+    const h = Math.floor((diff % 86400) / 3600);
+    const m = Math.floor((diff % 3600) / 60);
+    const s = diff % 60;
+    el.textContent = `${d}д ${h}ч ${m}м ${s}с`;
+  }, 1000);
+}
+
 async function showTop() {
   $('#gamesSection').classList.add('hidden');
   $('#subPage').classList.remove('hidden');
   setActiveTab('top');
 
-  let leadersHtml = '<p>Загрузка...</p>';
+  let leadersHtml = '';
   try {
-    const res = await fetch(`${API_BASE}/leaderboard`);
+    const res = await fetch(`${API_BASE}/leaderboard`, {
+      headers: { "init-data": tg?.initData || "" }
+    });
     if (res.ok) {
       const data = await res.json();
-      leadersHtml = data.map((item, idx) => `
-        <div class="mini-row ${item.is_premium ? 'is-premium-user' : ''}">
-          <span style="font-weight:900; width:20px;">#${idx+1}</span>
-          <span style="flex:1;">${item.name} ${item.is_premium ? '👑' : ''}</span>
-          <span style="color:var(--gold); font-weight:800;">${item.balance} ⭐</span>
-        </div>
-      `).join('');
+      if (data.length === 0) {
+        leadersHtml = '<p style="font-size:11px; color:var(--muted); text-align:center;">Места пока пусты. Будьте первым!</p>';
+      } else {
+        leadersHtml = data.map((item, idx) => `
+          <div class="mini-row">
+            <span style="font-weight:900; width:20px;">#${idx+1}</span>
+            <span style="flex:1;">${item.name} ${item.is_premium ? '👑' : ''} ${item.user_id ? `<small>(${item.user_id})</small>` : ''}</span>
+            <span style="color:var(--gold); font-weight:800;">${item.balance} 🌕</span>
+          </div>
+        `).join('');
+      }
     }
   } catch (e) {}
 
   $('#subPageContent').innerHTML = `
     <div class="sub-card">
       <h2>🏆 Топ-10 игроков</h2>
-      <p style="font-size:11px; color:var(--muted); margin-bottom:12px;">Каждый месяц TOP-10 игроков гарантированно получают по 100 звезд ⭐!</p>
+      <div style="background:#07080d; padding:10px; border-radius:12px; margin-bottom:12px; text-align:center;">
+        <span style="font-size:10px; color:var(--muted); display:block;">До окончания сезона:</span>
+        <strong id="seasonTimer" style="color:var(--green); font-size:16px;">Загрузка...</strong>
+      </div>
+      <p style="font-size:11px; color:var(--muted); margin-bottom:12px;">Топ-10 игроков получают по 100 звезд ⭐ в конце месяца!</p>
       <div class="mini-list">${leadersHtml}</div>
-      <button class="primary-btn" onclick="alert('За очень высокую активность вы можете получить дополнительно от меня от 50-200 звезд!')" style="background:#222a40; margin-top:15px;">🎁 Доп. награды за активность</button>
+      <button class="primary-btn" onclick="alert('За очень высокую активность вы можете получить дополнительно от 50 до 200 звезд!')" style="background:#1c2130; margin-top:10px;">🎁 Доп. награды за активность</button>
     </div>`;
+
+  startSeasonTimer();
 }
 
-// ПРОФИЛЬ
 function showProfile() {
   $('#gamesSection').classList.add('hidden');
   $('#subPage').classList.remove('hidden');
@@ -139,68 +173,69 @@ function showProfile() {
 
   const u = state.user;
   $('#subPageContent').innerHTML = `
-    <div class="sub-card ${state.isPremium ? 'is-premium-user' : ''}">
-      <h2>👤 Профиль ${state.isPremium ? '👑 Премиум' : ''}</h2>
+    <div class="sub-card">
+      <h2>👤 Профиль</h2>
       <p><b>Имя:</b> ${u.first_name || 'Игрок'}</p>
       <p><b>ID:</b> <code>${u.id}</code></p>
-      <p><b>Баланс звезд:</b> ${state.balance} ⭐</p>
-      <p><b>Баланс лун:</b> ${state.lunaBalance} 🌕</p>
-      <h3 style="margin-top:20px; font-size:14px;">🎒 Инвентарь и награды</h3>
-      <p style="font-size:11px; color:var(--muted);">Здесь будут отображаться ваши выигранные кейсы и призы.</p>
+      <p><b>Баланс Лун:</b> ${state.balance} 🌕</p>
+      <button class="primary-btn" onclick="showToast('Модуль покупки Премиум в разработке!')" style="background:linear-gradient(135deg, #ffd95e, #b89114); color:#000;">👑 Купить PREMIUM</button>
     </div>`;
 }
 
-// ИГРА МИНЫ (Без ставок, с выбором сетки как на фото)
+// ИГРА МИНЫ
 function showGame(page) {
   if (page === 'mines') {
     $('#subPageContent').innerHTML = `
       <div class="sub-card">
         <button class="back-btn" onclick="showGames()">‹ Игры</button>
         <h2>💣 Мины</h2>
-        <p style="font-size:11px; color:var(--muted);">Выберите размер игрового поля:</p>
-        <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:6px; margin:15px 0;">
-          <button class="primary-btn" onclick="startMinesSession(3, 2)" style="margin:0; background:#1c2130;">3x3</button>
-          <button class="primary-btn" onclick="startMinesSession(5, 4)" style="margin:0; background:#795cff;">5x5</button>
-          <button class="primary-btn" onclick="startMinesSession(7, 8)" style="margin:0; background:#1c2130;">7x7</button>
+        <p style="font-size:11px; color:var(--muted);">Выберите сложность:</p>
+        <div style="display:grid; gap:8px; margin:15px 0;">
+          <button class="primary-btn" onclick="startMinesSession('easy')" style="background:#28a745; margin:0;">🟢 Easy (3 мины)</button>
+          <button class="primary-btn" onclick="startMinesSession('medium')" style="background:#ffc107; color:#000; margin:0;">🟡 Medium (6 мин)</button>
+          <button class="primary-btn" onclick="startMinesSession('hardcore')" style="background:#dc3545; margin:0;">🔴 Hardcore (10 мин)</button>
         </div>
+        <button class="back-btn" onclick="alert('Дроп: 🛡 Щит (7%), 🔍 Сканер (4%), 🧸 Мишка (1.5%), 🌹 Роза (0.7%)')" style="width:100%;">🎁 Возможные награды</button>
       </div>`;
     $('#gamesSection').classList.add('hidden');
     $('#subPage').classList.remove('hidden');
+  } else {
+    showToast('Модуль в разработке 🚀');
   }
 }
 
-async function startMinesSession(gridSize, minesCount) {
+async function startMinesSession(diff) {
   try {
     const res = await fetch(`${API_BASE}/mines/start`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ initData: tg?.initData || "", grid_size: gridSize, mines_count: minesCount })
+      body: JSON.stringify({ initData: tg?.initData || "", difficulty: diff })
     });
     const data = await res.json();
     if (res.ok) {
-      renderMinesBoard(data.game_id, gridSize);
+      state.attemptsLeft = data.attempts_left;
+      renderMinesBoard(data.game_id);
+    } else {
+      showToast(data.detail);
     }
   } catch (e) {
     showToast("Ошибка запуска");
   }
 }
 
-function renderMinesBoard(gameId, gridSize) {
+function renderMinesBoard(gameId) {
   let cellsHtml = '';
-  let gridClass = gridSize === 3 ? 'mines-grid-3' : gridSize === 7 ? 'mines-grid-7' : 'mines-grid-5';
-  let totalCells = gridSize * gridSize;
-
-  for (let i = 0; i < totalCells; i++) {
+  for (let i = 0; i < 25; i++) {
     cellsHtml += `<button class="mine-cell" data-idx="${i}" onclick="openMineCell('${gameId}', ${i})">?</button>`;
   }
 
   $('#subPageContent').innerHTML = `
     <div class="sub-card">
-      <button class="back-btn" onclick="showGames()">‹ Назад</button>
+      <button class="back-btn" onclick="showGames()">‹ Меню</button>
       <h2>💣 Мины</h2>
-      <div id="multiplierDisplay" style="font-size:13px; color:var(--green); margin-bottom:8px;">Множитель: x1.0</div>
-      <div class="${gridClass}">${cellsHtml}</div>
-      <button class="primary-btn" id="claimBtn" onclick="claimMines('${gameId}')" style="background:var(--green); color:#000; display:none;">Забрать выигрыш</button>
+      <div id="bankDisplay" style="font-size:14px; color:var(--green); margin-bottom:8px;">Накоплено: 0 🌕</div>
+      <div class="mines-grid-5">${cellsHtml}</div>
+      <button class="primary-btn" id="claimBtn" onclick="claimMines('${gameId}')" style="background:var(--green); color:#000; display:none;">Забрать выигрыш (Cash Out)</button>
     </div>`;
 }
 
@@ -217,17 +252,20 @@ window.openMineCell = async function(gameId, cellIdx) {
     if (data.status === "boom") {
       btn.classList.add("boom");
       btn.textContent = "💥";
-      showToast("Вы подорвались на мине!");
+      showToast("Вы подорвались! Банк сгорел.");
       setTimeout(showGames, 1500);
     } else if (data.status === "safe") {
       btn.classList.add("safe", "opened");
       btn.textContent = "👑";
       btn.disabled = true;
-      $('#multiplierDisplay').textContent = `Множитель: x${data.multiplier}`;
+      $('#bankDisplay').textContent = `Накоплено: ${data.total_bank} 🌕`;
       $('#claimBtn').style.display = "block";
+      if (data.drop) showToast(data.drop);
+    } else if (data.status === "shield_saved") {
+      showToast(data.message);
     }
   } catch (e) {
-    showToast("Ошибка");
+    showToast("Ошибка или задержка 2 сек!");
   }
 };
 
@@ -241,74 +279,36 @@ window.claimMines = async function(gameId) {
     const data = await res.json();
     if (res.ok) {
       state.balance = data.balance;
-      $('#starBalance').textContent = state.balance;
-      showToast(`Выигрыш забран!`);
+      showToast(`Выиграно +${data.win} 🌕!`);
       showGames();
+      renderHomeContent();
     }
   } catch (e) {}
 };
 
-// АДМИН-ПАНЕЛЬ И УПРАВЛЕНИЕ МУЗЫКОЙ В КНОПКЕ ЗВУКА
-$('#soundBtn').addEventListener('click', async () => {
-  if (state.isAdmin) {
-    openAdminModal();
-    return;
-  }
-
-  // Обычный плеер музыки для пользователей
-  if (!state.audio) {
-    try {
-      const res = await fetch(`${API_BASE}/music`);
-      const data = await res.json();
-      if (data.url) {
-        state.audio = new Audio(data.url);
-        state.audio.loop = true;
-      }
-    } catch (e) {}
-  }
-  if (state.audio) {
-    if (state.audioPlaying) {
-      state.audio.pause();
-      state.audioPlaying = false;
-      showToast('Музыка выключена');
-    } else {
-      state.audio.play().then(() => {
-        state.audioPlaying = true;
-        showToast('Музыка играет');
-      }).catch(() => showToast('Ошибка воспроизведения'));
-    }
-  } else {
-    showToast('Трек не настроен');
-  }
-});
-
-function openAdminModal() {
+// АДМИНКА ДЛЯ ID 6591727196 (⚙️)
+$('#adminBtn').addEventListener('click', () => {
   const modal = document.createElement('div');
   modal.className = 'modal-overlay';
   modal.innerHTML = `
     <div class="modal-card">
-      <h3>🛠 Админ-панель</h3>
+      <h3>⚙️ Админ-панель</h3>
       <div style="margin:10px 0; text-align:left;">
         <label style="font-size:10px;">ID пользователя:</label>
         <input type="number" id="admUserId" style="width:100%; padding:6px; background:#07080d; border:1px solid var(--line); color:#fff; border-radius:6px; margin-bottom:8px;">
-        <label style="font-size:10px;">Сумма звезд / Дни премиума:</label>
+        <label style="font-size:10px;">Количество / Дни:</label>
         <input type="number" id="admAmount" style="width:100%; padding:6px; background:#07080d; border:1px solid var(--line); color:#fff; border-radius:6px; margin-bottom:10px;">
-        <button class="primary-btn" onclick="executeAdminAction('balance')">Начислить звезды</button>
-        <button class="primary-btn" onclick="executeAdminAction('premium')" style="background:var(--gold); color:#000;">Выдать Premium</button>
-        <button class="primary-btn" onclick="executeAdminAction('unpremium')" style="background:var(--red);">Снять Premium</button>
+        <button class="primary-btn" onclick="execAdmin('balance')">Начислить Луны</button>
+        <button class="primary-btn" onclick="execAdmin('premium')" style="background:var(--gold); color:#000;">Выдать Premium</button>
       </div>
       <button class="back-btn" onclick="this.closest('.modal-overlay').remove()" style="width:100%; margin-top:10px;">Закрыть</button>
     </div>`;
   document.body.appendChild(modal);
-}
+});
 
-window.executeAdminAction = async function(type) {
+window.execAdmin = async function(type) {
   const targetId = parseInt($('#admUserId').value);
   const amount = parseInt($('#admAmount').value) || 0;
-  if (!targetId) {
-    showToast("Введите ID!");
-    return;
-  }
   try {
     const res = await fetch(`${API_BASE}/admin/action`, {
       method: "POST",
@@ -316,12 +316,10 @@ window.executeAdminAction = async function(type) {
       body: JSON.stringify({ initData: tg?.initData || "", target_id: targetId, amount: amount, days: amount, action_type: type })
     });
     if (res.ok) {
-      showToast("Успешно выполнено!");
+      showToast("Выполнено!");
       document.querySelector('.modal-overlay').remove();
     }
-  } catch (e) {
-    showToast("Ошибка админки");
-  }
+  } catch (e) {}
 };
 
 $$('.nav-item').forEach(item => {
